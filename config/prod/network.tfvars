@@ -1,4 +1,3 @@
-address_space = ["10.20.0.0/23"]
 
 tjenester = {
   ordre = { prefix = "10.20.0.0/24", runtime = "vm" }
