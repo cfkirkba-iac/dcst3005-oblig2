@@ -76,3 +76,15 @@ variable "webapp_sku" {
   type        = string
   default     = "B1"
 }
+
+variable "extra_inbound_rules" {
+  description = "Ekstra innkommende NSG-regler for tjenesten."
+  type = list(object({
+    name                   = string
+    priority               = number
+    protocol               = string
+    source_address_prefix  = string
+    destination_port_range = string
+  }))
+  default = []
+}
