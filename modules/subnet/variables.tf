@@ -39,3 +39,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "extra_inbound_rules" {
+  description = "Ekstra innkommende NSG-regler for tjenesten."
+  type = list(object({
+    name                   = string
+    priority               = number
+    protocol               = string
+    source_address_prefix  = string
+    destination_port_range = string
+  }))
+  default = []
+}
