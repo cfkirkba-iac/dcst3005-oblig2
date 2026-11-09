@@ -9,16 +9,6 @@ locals {
   }
 }
 
-# Brukes kun til å bygge import-ID-er uten hardkodet subscription-ID.
-data "azurerm_resource_group" "existing" {
-  name = local.resource_group_name
-}
-
-data "azurerm_virtual_network" "existing" {
-  name                = local.vnet_name
-  resource_group_name = local.resource_group_name
-}
-
 resource "azurerm_resource_group" "this" {
   name     = local.resource_group_name
   location = var.location
@@ -32,14 +22,4 @@ module "vnet" {
   location            = azurerm_resource_group.this.location
   address_space       = var.address_space
   tags                = local.tags
-}
-
-import {
-  to = azurerm_resource_group.this
-  id = data.azurerm_resource_group.existing.id
-}
-
-import {
-  to = module.vnet.azurerm_virtual_network.this
-  id = data.azurerm_virtual_network.existing.id
 }
