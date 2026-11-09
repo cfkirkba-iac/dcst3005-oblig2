@@ -21,11 +21,6 @@ locals {
     kurs  = "dcst3005-oblig2"
   }
 
-  subnet_id   = "${local.shared.vnet_id}/subnets/snet-${var.service}"
-  nsg_id      = "${local.shared.resource_group_id}/providers/Microsoft.Network/networkSecurityGroups/nsg-${var.service}"
-  storage_id  = "${local.shared.resource_group_id}/providers/Microsoft.Storage/storageAccounts/st${var.kortnavn}${var.service}${var.miljo}"
-  keyvault_id = "${local.shared.resource_group_id}/providers/Microsoft.KeyVault/vaults/kv-${var.kortnavn}-${var.service}-${var.miljo}"
-
   vm_instances     = var.runtime == "vm" ? { this = true } : {}
   webapp_instances = var.runtime == "webapp" ? { this = true } : {}
 }
@@ -91,64 +86,4 @@ module "webapp" {
   subnet_id           = module.subnet.subnet_id
   sku                 = var.webapp_sku
   tags                = local.tags
-}
-
-import {
-  to = module.subnet.azurerm_subnet.this
-  id = local.subnet_id
-}
-
-import {
-  to = module.subnet.azurerm_network_security_group.this
-  id = local.nsg_id
-}
-
-import {
-  to = module.subnet.azurerm_network_security_rule.http
-  id = "${local.nsg_id}/securityRules/allow-http"
-}
-
-import {
-  to = module.subnet.azurerm_subnet_network_security_group_association.this
-  id = local.subnet_id
-}
-
-import {
-  to = module.storage.azurerm_storage_account.this
-  id = local.storage_id
-}
-
-import {
-  to = module.keyvault.azurerm_key_vault.this
-  id = local.keyvault_id
-}
-
-import {
-  for_each = local.vm_instances
-  to       = module.vm[each.key].azurerm_public_ip.this
-  id       = "${local.shared.resource_group_id}/providers/Microsoft.Network/publicIPAddresses/pip-${var.service}"
-}
-
-import {
-  for_each = local.vm_instances
-  to       = module.vm[each.key].azurerm_network_interface.this
-  id       = "${local.shared.resource_group_id}/providers/Microsoft.Network/networkInterfaces/nic-${var.service}"
-}
-
-import {
-  for_each = local.vm_instances
-  to       = module.vm[each.key].azurerm_linux_virtual_machine.this
-  id       = "${local.shared.resource_group_id}/providers/Microsoft.Compute/virtualMachines/vm-${var.service}"
-}
-
-import {
-  for_each = local.webapp_instances
-  to       = module.webapp[each.key].azurerm_service_plan.this
-  id       = "${local.shared.resource_group_id}/providers/Microsoft.Web/serverFarms/asp-${var.service}"
-}
-
-import {
-  for_each = local.webapp_instances
-  to       = module.webapp[each.key].azurerm_linux_web_app.this
-  id       = "${local.shared.resource_group_id}/providers/Microsoft.Web/sites/app-${var.kortnavn}-${var.service}-${var.miljo}"
 }
