@@ -8,11 +8,6 @@ variable "kortnavn" {
   }
 }
 
-variable "location" {
-  description = "Azure-regionen. Settes i config/felles.tfvars."
-  type        = string
-}
-
 variable "miljo" {
   description = "Miljøet. Settes av scripts/kjor.sh (TF_VAR_miljo), ikke i en .tfvars-fil."
   type        = string
@@ -21,11 +16,6 @@ variable "miljo" {
     condition     = contains(["dev", "prod"], var.miljo)
     error_message = "miljo må være dev eller prod."
   }
-}
-
-variable "address_space" {
-  description = "Adresserommet til VNet-et."
-  type        = list(string)
 }
 
 variable "tjenester" {
